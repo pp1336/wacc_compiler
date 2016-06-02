@@ -1,0 +1,80 @@
+#!/bin/bash
+
+compileerrors=0;
+assembleerrors=0;
+
+echored () {
+	echo -e "\033[0;32m$@\033[0m"
+}
+
+print-double-line () {
+	echo -n -e "\033[0;31m"
+	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
+	echo -n -e "\033[0m"
+}
+
+print-single-line () {
+	echo -n -e "\033[0;31m"
+	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
+	echo -n -e "\033[0m"
+}
+
+test () {
+	for f in $@; do
+		basename="$(basename $f)"
+    	filename="${basename%.*}"
+
+    	echored $f
+    	print-single-line
+    	echored "Compiling ${f} ..."
+    	./compile $f
+    	if [ $? -eq 0 ]; then
+    		echored "Assembling ${filename}.s ..."
+    		arm-linux-gnueabi-gcc -o ${filename} \
+    				-mcpu=arm1176jzf-s -mtune=arm1176jzf-s ${filename}.s
+    		if [ $? -eq 0 ]; then
+    			echored "Running ${filename} ..."
+    			echo "Output:"
+    			cmd="timeout 10 \
+                    qemu-arm -L /usr/arm-linux-gnueabi/ ${filename}"
+    			if [ -f ${f%.*}.in ]; then
+					$cmd < ${f%.*}.in
+				else
+					$cmd
+				fi
+        		exitcode=$?
+        		echo "---------------"
+        		echo -n "Exit code: $exitcode"
+        		if [ $exitcode -eq 124 ]; then
+        			echo " (timed out)"
+        		else
+        			echo ""
+        		fi
+        	else
+        		assembleerrors=$((assembleerrors+1))
+        	fi
+    	else
+    		compileerrors=$((compileerrors+1))
+    	fi
+    	rm -f $filename ${filename}.s
+        print-double-line
+    done
+}
+
+print-double-line
+echored "Making project ..."
+make > /dev/null
+print-double-line
+
+for target in $@; do
+	if [ -d $target ]; then
+		test `find $target -name '*.wacc'`
+	else
+		test $target
+	fi
+done
+
+echored "Done!"
+echored "Compile errors: ${compileerrors}, Assemble errors: ${assembleerrors}"
+print-double-line
+

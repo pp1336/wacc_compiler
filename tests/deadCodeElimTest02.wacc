@@ -1,0 +1,13 @@
+# program that never uses function f
+
+# Ouput:
+# 3
+
+begin
+ int f() is
+    return 0 
+  end
+ int x = 2;
+ int a = 3;
+ println(a) 
+end

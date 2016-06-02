@@ -1,0 +1,81 @@
+#!/usr/bin/ruby
+# Ruby front-end for your compiler.
+# You are free to change the language used for this script,
+# but do *not* change its name.
+
+# puts "TODO: setup this script to call your WACC compiler"
+
+require 'optparse'
+
+DEFAULTS = {
+  generate_c: false,
+  rainbow: false,
+}
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{__FILE__} [options] filename1, filename2, ..."
+
+  opts.on("-c", "--generate-c", "Generates C code") do
+    options[:generate_c] = true
+  end
+
+  opts.on("-r", "--rainbow", "Display a beautiful artwork") do
+    options[:rainbow] = true
+  end
+
+  opts.on("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+end.parse!
+
+options = DEFAULTS.merge(options)
+
+if options[:rainbow] then
+	Kernel.system("./prettyprint.rb --border \"%\" --center -t 3 art")
+end
+
+JAVA8="/usr/lib/jvm/jdk-8-oracle-x64/bin/java"
+
+def compile(generate_c, *args)
+	for f in args do
+		if ! File.file?(f) then
+			print "could not find #{f}"
+			exit 1
+		end
+
+        extensionless = File.basename(f, '.wacc')
+
+		cflag =
+		generate_c ? "-c" : ""
+		system("#{JAVA8} -cp bin:bin/antlr:lib/antlr-4.4-complete.jar Compiler #{f} #{cflag}")
+
+		case $?.exitstatus
+		when 0
+			print "no error\n"
+    	when 100
+    		print "#syntax_error#\n"
+    	    exit 100
+    	when 200
+    	 	print "#semantic_error#\n"
+    		exit 200
+    	else
+    		print "unknown error\n"
+		end
+
+		if generate_c then
+        	print `arm-linux-gnueabi-gcc -O3 -S "#{extensionless}.c" -mcpu=arm1176jzf-s -mtune=arm1176jzf-s $f`
+        	#print `arm-linux-gnueabi-gcc -S "#{extensionless}.c" -mcpu=arm1176jzf-s -mtune=arm1176jzf-s $f`
+        end
+	end
+end
+
+ARGV.each do |target|
+	if File.directory?(target) then
+		compile(options[:generate_c], *`find $target -name '*.wacc'`.split)
+	else
+		compile(options[:generate_c], target)
+	end
+end
+

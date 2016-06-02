@@ -1,0 +1,48 @@
+This is an implementation of a compiler for a simple language called WACC
+
+> antlr <
+
+The antlr directory contains simple example ANTLR lexer and parser specification
+files BasicLexer.g4 and Basic.g4, along with a script antlrBuild that builds the
+corresponding Java class files using the ANTLR libraries (more details below).
+  
+> lib <
+
+The lib directory contains the ANTLR library files in antlr-4.4-complete.jar. 
+
+> grun <
+
+The grun script allows you to run the ANTLR TestRig program that can assist you 
+in debugging you lexer and parser (more details below).
+
+> compile <
+
+The compile script provides a frontend interface to the WACC
+compiler.
+
+> Makefile <
+
+Builds the project. Requires antlr
+
+> grun <
+
+This script provides access to the ANTLR TestRig program. You will probably find
+this helpful for testing your lexer and parser. The script is just a wrapper for
+the TestRig in the project environment. You need to tell it what grammar to use
+what rule to start parsing with and what kind of output you want.
+
+For example:
+  ./grun antlr.Basic prog -tokens
+will run the TestRig using the 'Basic' grammar, starting from the rule fo 'prog'
+and outputting the tokens seen by the lexer. To see how the parser groups these 
+tokens you can use the -tree or -gui options instead, such as:
+  ./grun antlr.Basic prog -gui
+In either case you will need to type in your input program and then close the 
+input stream with ctrl-D.
+
+Rather than typing your input programs in by hand, you can pass the TestRig a 
+file to read by piping it in through stdin with
+  ./grun antlr.Basic expr -gui < testfile
+When using the TestRig in this way you won't need to hit ctrl-D to close the 
+input stream as the EOF character in the file does this for you.
+

@@ -1,0 +1,88 @@
+mathLib
+
+ int power(int x, int p) is
+    int base = 1;
+    while p > 0 do
+      if (p % 2) == 1 then
+          base = base * x
+      else
+          skip
+      fi;
+      x = x * x;
+      p = p / 2
+    done;
+    return base
+ end
+
+ int fib(int n) is
+    int a = 0;
+    int b = 1;
+    while n > 0 do
+      n = n - 1;
+      int temp = b;
+      b = a + b;
+      a = temp
+    done;
+    return a
+ end
+
+ int abs(int x) is
+    if x >= 0 then
+      return x
+    else
+      return -x
+    fi
+ end
+
+ int fac(int n) is
+    int base = 1;
+    while n > 0 do
+      base = base * n;
+      n = n - 1
+    done;
+    return base
+ end
+
+ int max(int a, int b) is
+    if a>= b then
+      return a
+    else
+      return b
+    fi
+ end
+
+ char minc(char a, char b) is
+    if a >= b then
+      return b
+    else
+      return a
+    fi
+ end
+
+ char maxc(char a, char b) is
+    if a >= b then
+      return a
+    else
+      return b
+    fi
+ end
+
+ int mid(int a, int b, int c) is
+    int m_1 = 0;
+    if a < b then
+      m_1 = a
+    else
+      m_1 = b
+    fi;
+    int m_2 = 0;
+    if b < c then
+      m_2 = b
+    else
+      m_2 = c
+    fi;
+    if m_1 > m_2 then
+      return m_1
+    else
+      return m_2
+    fi
+ end

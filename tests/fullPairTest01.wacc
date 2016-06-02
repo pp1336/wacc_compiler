@@ -1,0 +1,15 @@
+# simple initialization of nested pairs
+
+# Output:
+# 3
+# 5
+
+begin
+    pair(int, int) x = newpair(3, 5);
+    pair(pair, int) y = (x, 6);
+    pair(int, int) z = fst y;
+    int w = fst z;
+				int s = snd z;
+    println w;
+    println s
+end

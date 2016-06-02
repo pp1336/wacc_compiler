@@ -1,0 +1,38 @@
+stringLib
+
+ int lookupc(char x, char[] a) is
+    int l = (len a) - 1;
+    if l < 0 then
+      return -1
+    else   
+      int r = -1;
+      while r < l do
+        r = r + 1;
+        if a[r] == x then
+          return r
+        else
+          skip
+        fi
+      done;
+      return -1
+    fi
+ end
+
+ char[] swapc(char[] a, int b, int c) is
+    char temp = a[b];
+    a[b] = a[c];
+    a[c] = temp;
+    return a
+ end
+
+ char[] reversec(char[] a) is
+    int last = (len a) - 1;
+    int l = (len a) / 2 - 1;
+    while l >= 0 do
+      char temp = a[l];
+      a[l] = a[last - l];
+      a[last - l] = temp;
+      l = l - 1
+    done;
+    return a
+ end

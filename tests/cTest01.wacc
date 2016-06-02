@@ -1,0 +1,11 @@
+# simple integer calculation 
+
+# Output:
+# -10570
+
+# Program:
+
+begin
+		int x = 45 + 33 - 32 * 333 + 8;
+  print x 
+end

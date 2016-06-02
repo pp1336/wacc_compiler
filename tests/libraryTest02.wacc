@@ -1,0 +1,18 @@
+# program using simple functions from imported libraries
+
+# Ouput:
+# 2
+
+import mathLib;	
+import arrayLib;
+import stringLib; 
+
+begin
+  int[] a = [0, 23, 234, 324, -23, 1, 0, 132, -3];
+  a = call heapSort(a);
+  int x = call printArrInt(a);
+  a = call reverse(a);
+  x = call printArrInt(a);
+  x = call maximum(a);
+  println x
+end
